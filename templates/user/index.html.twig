@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
+    <form action="{{ path('app_user') }}" method="post"  >
+        <input type="hidden" name="userlog" value="{{ app.user.id }}">
+        <div class="mb-3">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="_first_name" value=""/>
+        </div>
+
+        <div class="mb-3">
+            <label for="first_name">Last Name:</label>
+            <input type="text" id="last_name" name="_last_name" value=""/>
+        </div>
+
+        <div class="mb-3">
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" id="phone_number" name="_phone_number" value=""/>
+        </div>
+
+        <div class="mb-3">
+            <label for="username">Email:</label>
+            <input type="text" id="username" name="_username" value=""/>
+        </div>
+
+        <div class="mb-3">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="_password"/>
+        </div>
+
+        <div class="mb-3">
+
+
+            {# If you want to control the URL the user is redirected to on success  #}
+            <input type="hidden" name="_target_path" value="{{ path('app_index'  ) }}"/>
+
+            <button name="submit" value= "submit" type="submit">Submit</button>
+        </div>
+
+
+
+
+    </form>
+
+{#    <ul>#}
+{#        <li>Your controller at <code><a href="{{ 'D:/xampp2/htdocs/new-test-auth/src/Controller/UserController.php'|file_link(0) }}">src/Controller/UserController.php</a></code></li>#}
+{#        <li>Your template at <code><a href="{{ 'D:/xampp2/htdocs/new-test-auth/templates/user/index.html.twig'|file_link(0) }}">templates/user/index.html.twig</a></code></li>#}
+{#    </ul>#}
+</div>
+{% endblock %}
