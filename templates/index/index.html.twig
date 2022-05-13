@@ -27,8 +27,9 @@
                     <td>{{ user.firstName|e }}</td>
                         <td>{{ user.lastName|e }}</td>
                         <td>{{ user.username|e }}</td>
-                        <td>{{ user.phoneNumber|e }}</td>
-                        <td>{{  dump(find(2).username) }}</td>
+                        <td>{{ phoneFormat(user.phoneNumber)|e }}</td>
+                        <td>{{  find(user.id).email }}</td>
+                        <td> {{  user.createdAt|date('d/m/Y') }}</td>
                         <td></td>
                     </tr>
                 {% endfor %}

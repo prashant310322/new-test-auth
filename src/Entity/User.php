@@ -2,17 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 #[ORM\EntityListeners(["App\Doctrine\UserSetUsernameListener"])]
 #[ORM\HasLifecycleCallbacks()]
+#[ApiResource(normalizationContext: ['groups' => ['user.read' ]],)]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -30,9 +34,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
+    #[Groups(["user.read"])]
     private $username;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["user.read"])]
     private $firstName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -169,6 +175,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
+    }
+
+    #[Groups(["user.read"])]
+    public function getPhoneNumberFormat(): ?string
+    {
+        return  '******' . substr($this->phoneNumber, -4);
     }
 
     public function setPhoneNumber(?string $phoneNumber): self

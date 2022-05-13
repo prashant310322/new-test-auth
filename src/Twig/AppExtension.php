@@ -16,6 +16,7 @@ class AppExtension extends AbstractExtension
 
        return array(
            new TwigFunction('find', array($this, 'find')),
+           new TwigFunction('phoneFormat', array($this, 'phoneFormat')),
        );
    }
 
@@ -26,5 +27,10 @@ class AppExtension extends AbstractExtension
     public  function  find($id)
    {
           return $this->userRepository->find($id);
+   }
+
+   public  function  phoneFormat($no)
+   {
+         return '******'. substr($no, -4);
    }
 }
