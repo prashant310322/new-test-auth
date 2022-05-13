@@ -7,10 +7,11 @@ namespace App\Doctrine;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Component\Security\Core\Security;
 
 class UserSetUsernameListener
 {
-    public function __construct( private  UserRepository $userRepository)
+    public function __construct( private  UserRepository $userRepository, private Security $security)
     {
     }
 
@@ -18,6 +19,14 @@ class UserSetUsernameListener
     {
 
         $time = new \DateTimeImmutable();
+
+        $loginUser = $this->security->getUser();
+
+        if($loginUser)
+        {
+            $id = $loginUser->getId();
+            $user->setCreatedBy($id);
+        }
 
         $user->setCreatedAt($time);
         $this->checkUnique($user);

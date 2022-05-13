@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 #[ORM\EntityListeners(["App\Doctrine\UserSetUsernameListener"])]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiResource(normalizationContext: ['groups' => ['user.read' ]],)]
+#[ApiResource(normalizationContext: ['groups' => ['user.read' ]], denormalizationContext: ['groups'=>['user.write']],)]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -25,12 +25,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Groups(["user.write"])]
     private $email;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
+    #[Groups(["user.write"])]
     private $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
@@ -38,32 +40,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $username;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["user.read"])]
+    #[Groups(["user.read", "user.write"])]
     private $firstName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["user.read", "user.write"])]
     private $lastName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["user.read", "user.write"])]
     private $phoneNumber;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Groups(["user.read"])]
     private $createdAt;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Groups(["user.read"])]
     private $updatedAt;
 
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Groups(["user.read"])]
     private $deletedAt;
 
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(["user.read"])]
     private $createdBy;
 
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(["user.read"])]
     private $updatedBy;
 
     #[ORM\Column(type: 'integer', nullable: true)]
+    #[Groups(["user.read"])]
     private $deletedBy;
 
     public function getId(): ?int
@@ -177,17 +187,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->phoneNumber;
     }
 
+    public function setPhoneNumber(?string $phoneNumber): self
+    {
+        $this->phoneNumber = $phoneNumber;
+        return $this;
+    }
+
     #[Groups(["user.read"])]
     public function getPhoneNumberFormat(): ?string
     {
         return  '******' . substr($this->phoneNumber, -4);
     }
 
-    public function setPhoneNumber(?string $phoneNumber): self
+    #[Groups(["user.read"])]
+    public function getCreatedAtFormat(): ?string
     {
-        $this->phoneNumber = $phoneNumber;
+        //$convertDate =  new \DateTimeImmutable($this->createdAt);
+        return  $this->createdAt->format('d/m/Y');
 
-        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
