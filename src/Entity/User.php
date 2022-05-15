@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Dto\UserInputDto;
+use App\Dto\UserOutputDto;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -15,7 +17,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 #[ORM\EntityListeners(["App\Doctrine\UserSetUsernameListener"])]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiResource(normalizationContext: ['groups' => ['user.read' ]], denormalizationContext: ['groups'=>['user.write']],)]
+#[ApiResource(normalizationContext: ['groups' => ['user.read' ]], denormalizationContext: ['groups'=>['user.write']],
+    input:UserInputDto::class, output: UserOutputDto::class)]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -67,6 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(["user.read"])]
     private $createdBy;
+
 
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(["user.read"])]
