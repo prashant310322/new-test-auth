@@ -13,9 +13,7 @@ use App\Repository\UserRepository;
 
 class UserInputDataTransformer implements  DataTransformerInterface
 {
-    public function __construct(private  UserRepository $userRepository)
-    {
-    }
+
 
     /**
      * @param UserInputDto $userInputDto
@@ -27,12 +25,14 @@ class UserInputDataTransformer implements  DataTransformerInterface
     {
 
         $users = $context[AbstractItemNormalizer::OBJECT_TO_POPULATE] ?? null;
+        dump($users);
 
         return $userInputDto->toEntity($users);
     }
 
     public function supportsTransformation($data, string $to, array $context = []): bool
     {
+        dump($data,$to);
 
         return User::class === $to && UserInputDto::class === ($context['input']['class'] ?? null);
     }

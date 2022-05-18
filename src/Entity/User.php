@@ -17,14 +17,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
 #[ORM\EntityListeners(["App\Doctrine\UserSetUsernameListener"])]
 #[ORM\HasLifecycleCallbacks()]
-#[ApiResource(normalizationContext: ['groups' => ['user.read' ]], denormalizationContext: ['groups'=>['user.write']],
-    input:UserInputDto::class, output: UserOutputDto::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['user.read' ]],
+    denormalizationContext: ['groups'=>['user.write']],
+    input:UserInputDto::class ,
+   )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
@@ -32,6 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $email;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(["user.write"])]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
@@ -79,6 +84,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer', nullable: true)]
     #[Groups(["user.read"])]
     private $deletedBy;
+
+    /**
+     * Returns true if this is currently-authenticated user
+     */
+    #[Groups(["user.read"])]
+    private $isMe;
 
     public function getId(): ?int
     {
@@ -292,5 +303,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->createdAt = new \DateTimeImmutable();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getIsMe():bool
+    {
+        if($this->isMe == null){
+            throw new \LogicException('this isme field is not initialized');
+        }
+        return $this->isMe;
+    }
+
+    /**
+     * @param mixed $isMe
+     */
+    public function setIsMe(bool $isMe): void
+    {
+        $this->isMe = $isMe;
+    }
+
 
 }

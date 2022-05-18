@@ -4,7 +4,9 @@
 namespace App\Serializer\Normalizer;
 
 
+use ApiPlatform\Core\Serializer\AbstractItemNormalizer;
 use App\Dto\UserInputDto;
+use App\Entity\User;
 use Symfony\Component\Serializer\Exception\BadMethodCallException;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Exception\ExtraAttributesException;
@@ -21,25 +23,31 @@ class UserInputDenormalizer implements  DenormalizerInterface, CacheableSupports
 {
 
 
-    private  $normalizer;
+    private  ObjectNormalizer $normalizer;
 
 
     public function __construct(ObjectNormalizer $normalizer)
     {
+        $this->normalizer = $normalizer;
     }
 
     public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
     {
+        dump($data);
 
-        $context[AbstractNormalizer::OBJECT_TO_POPULATE] = $this->createDto($context);
+        $context[AbstractItemNormalizer::OBJECT_TO_POPULATE] = $this->createDto($context);
 
-        return $this->normalizer->denormalize($data, $type, $format, $context);
+        dump($context);
+
+            return $this->normalizer->denormalize($data, $type, $format, $context);
+
+
     }
 
     public function supportsDenormalization(mixed $data, string $type, string $format = null)
     {
-
-        return $type === UserInputDto::class;
+        dump($data, $type);
+        return UserInputDto::class === $type ;
     }
 
     public function hasCacheableSupportsMethod(): bool
@@ -49,7 +57,7 @@ class UserInputDenormalizer implements  DenormalizerInterface, CacheableSupports
 
     private function createDto(array $context): UserInputDto
     {
-        $entity = $context['object_to_populate'] ?? null;
+        $entity =   $context['object_to_populate']  ?? null;
 
         if ($entity && !$entity instanceof User) {
             throw new \Exception(sprintf('Unexpected resource class "%s"', get_class($entity)));

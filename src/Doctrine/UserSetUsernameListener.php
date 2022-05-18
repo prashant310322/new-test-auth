@@ -29,6 +29,7 @@ class UserSetUsernameListener
         }
 
         $user->setCreatedAt($time);
+        $user->setIsMe(true);
         $this->checkUnique($user);
 
     }

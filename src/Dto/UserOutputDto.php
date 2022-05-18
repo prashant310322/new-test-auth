@@ -35,6 +35,7 @@ class UserOutputDto
     {
         $output = new UserOutputDto();
         $output->email = $user->getEmail();
+        $output->password = $user->getPassword();
         $output->firstName = $user->getFirstName();
         $output->lastName =  $user->getLastName();
         $output->username =  $user->getUsername();
