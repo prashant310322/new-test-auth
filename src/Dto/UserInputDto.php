@@ -7,6 +7,7 @@ namespace App\Dto;
 
 use App\Entity\User;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class UserInputDto
 {
@@ -16,8 +17,12 @@ class UserInputDto
     #[Groups(["user.read", "user.write"])]
     public ?string $email = null;
 
-    #[Groups(["user.write"])]
+
     public ?string $password = null;
+
+    #[Groups(["admin.read", "admin.write"])]
+    #[SerializedName('password')]
+    public $plainPassword;
 
     #[Groups(["user.write"])]
     public $roles = [];
@@ -32,17 +37,19 @@ class UserInputDto
     public ?string $lastName  = null;
 
 
-    #[Groups(["user.read", "user.write"])]
+    #[Groups(["admin.read"])]
     public ?string $phoneNumber = null;
 
     #[Groups(["user.read"])]
     public ?string $createdBy = null;
 
+    public ?bool $isMe = false;
+
     public static  function createFromEntity(?User $user): self
     {
         $dto = new UserInputDto();
 
-        dump($user, $dto);
+       // dump($user, $dto);
 
         // not an edit, so just return an empty DTO
         if (!$user) {
@@ -52,9 +59,12 @@ class UserInputDto
 
         $dto->email = $user->getEmail();
         $dto->firstName = $user->getFirstName();
+        $dto->plainPassword = $user->getPassword();
         $dto->lastName = $user->getLastName();
         $dto->username = $user->getUsername();
         $dto->phoneNumber = $user->getPhoneNumber();
+        $dto->roles   = $user->getRoles();
+
         return $dto;
 
     }
@@ -66,7 +76,10 @@ class UserInputDto
         $user->setEmail($this->email)
              ->setFirstName(($this->firstName))
              ->setLastName($this->lastName)
+            ->setPlainPassword($this->plainPassword)
+            ->setRoles($this->roles)
              ->setPhoneNumber($this->phoneNumber);
+
 
         if(!empty($this->password))
         {

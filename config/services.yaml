@@ -41,3 +41,8 @@ services:
         bind:
             $collectionDataProvider: '@api_platform.doctrine.orm.default.collection_data_provider'
             $itemDataProvider: '@api_platform.doctrine.orm.default.item_data_provider'
+
+    App\Serializer\AdminGroupsContextBuilder:
+        decorates: 'api_platform.serializer.context_builder'
+        arguments: ['@App\Serializer\AdminGroupsContextBuilder.inner']
+        autoconfigure: false

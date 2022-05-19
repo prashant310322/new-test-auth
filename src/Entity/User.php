@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -20,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     normalizationContext: ['groups' => ['user.read' ]],
     denormalizationContext: ['groups'=>['user.write']],
-    input:UserInputDto::class ,
+//    input:UserInputDto::class
    )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -28,7 +29,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-
     private $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
@@ -40,7 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
-    #[Groups(["user.write"])]
+    #[Groups(["admin.read", "admin.write"])]
     private $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true, unique: true)]
@@ -56,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $lastName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["user.read", "user.write"])]
+    #[Groups(["admin.read"])]
     private $phoneNumber;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
@@ -88,8 +88,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Returns true if this is currently-authenticated user
      */
-    #[Groups(["user.read"])]
-    private $isMe;
+//    #[Groups(["user.read"])]
+//    private $isMe =false;
+
+    #[Groups(["admin.read", "admin.write"])]
+    #[SerializedName('password')]
+    private $plainPassword;
 
     public function getId(): ?int
     {
@@ -158,7 +162,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+         $this->plainPassword = null;
     }
 
     public function getUsername(): ?string
@@ -208,7 +212,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[Groups(["user.read"])]
+    #[Groups(["admin.read"])]
     public function getPhoneNumberFormat(): ?string
     {
         return  '******' . substr($this->phoneNumber, -4);
@@ -322,6 +326,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->isMe = $isMe;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     */
+    public function setPlainPassword(string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+        return  $this;
+    }
+
 
 
 }
