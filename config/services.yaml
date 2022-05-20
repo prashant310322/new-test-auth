@@ -46,3 +46,12 @@ services:
         decorates: 'api_platform.serializer.context_builder'
         arguments: ['@App\Serializer\AdminGroupsContextBuilder.inner']
         autoconfigure: false
+
+    App\EventsListener\LoginListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'security.interactive_login' }
+    App\EventsListener\LogoutListener:
+        tags:
+            - name: 'kernel.event_listener'
+              event: 'Symfony\Component\Security\Http\Event\LogoutEvent'
+              dispatcher: security.event_dispatcher.main
