@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -80,4 +81,29 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+   public  function findAllCreatedBy():array
+   {
+       $qb = $this->CreateQueryBuilder('u');
+
+       return $this->createdByNotNullQuery($qb)
+            ->OrderBy('u.email', 'ASC')
+            ->getQuery()
+            ->getResult();
+   }
+
+    public function findAllByNewest():array
+    {
+        return $this->createQueryBuilder('u')
+            ->OrderBy('u.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    private function  createdByNotNullQuery(QueryBuilder $qb)
+    {
+        return $qb->andWhere('u.createdBy IS NOT NULL');
+    }
+
 }

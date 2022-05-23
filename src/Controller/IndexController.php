@@ -20,9 +20,10 @@ class IndexController extends AbstractController
     {
        // dd($this);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $users = $this->userRepository->findAll();
+        $users = $this->userRepository->findAllByNewest();
 
-        //dd($users);
+        $users1 = $this->userRepository->findAllCreatedBy();
+        dd($users1);
 
         //dump($this->container->get('security.token_storage')->getToken());
 
