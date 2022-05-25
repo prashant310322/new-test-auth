@@ -43,6 +43,7 @@ class UserInputDto
     #[Groups(["user.read"])]
     public ?string $createdBy = null;
 
+    #[Groups(["user.read"])]
     public ?bool $isMe = false;
 
     public static  function createFromEntity(?User $user): self
@@ -64,6 +65,7 @@ class UserInputDto
         $dto->username = $user->getUsername();
         $dto->phoneNumber = $user->getPhoneNumber();
         $dto->roles   = $user->getRoles();
+        $dto->isMe    = $user->getIsMe();
 
         return $dto;
 
@@ -78,7 +80,7 @@ class UserInputDto
              ->setLastName($this->lastName)
             ->setPlainPassword($this->plainPassword)
             ->setRoles($this->roles)
-             ->setPhoneNumber($this->phoneNumber);
+            ->setPhoneNumber($this->phoneNumber);
 
 
         if(!empty($this->password))

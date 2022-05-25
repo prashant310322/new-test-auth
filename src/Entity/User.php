@@ -88,8 +88,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Returns true if this is currently-authenticated user
      */
-//    #[Groups(["user.read"])]
-//    private $isMe =false;
+    #[Groups(["user.read"])]
+    private $isMe =false;
 
     #[Groups(["admin.read", "admin.write"])]
     #[SerializedName('password')]
@@ -313,9 +313,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getIsMe():bool
     {
-        if($this->isMe == null){
-            throw new \LogicException('this isme field is not initialized');
-        }
+//        if($this->isMe == null){
+//            throw new \LogicException('this isme field is not initialized');
+//        }
         return $this->isMe;
     }
 

@@ -32,7 +32,7 @@ final class AdminGroupsContextBuilder implements SerializerContextBuilderInterfa
             $context['groups'][] = $normalization ? 'admin.read' : 'admin.write';
         }
 
-        dump($context['groups']);
+        //dump($context['groups']);
         $context['groups'] = array_unique($context['groups']);
 
         return $context;
