@@ -63,4 +63,14 @@ class AddressRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+     public function  findUserById($id):  array
+     {
+         return $this->createQueryBuilder('a')
+            ->andWhere('a.user =  :val')
+            ->setParameter('val', $id)
+            ->getQuery()
+             ->getResult();
+
+     }
 }

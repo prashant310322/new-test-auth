@@ -50,7 +50,7 @@ class UserInputDto
     {
         $dto = new UserInputDto();
 
-       // dump($user, $dto);
+       dump($user, $dto);
 
         // not an edit, so just return an empty DTO
         if (!$user) {

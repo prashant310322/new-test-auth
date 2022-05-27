@@ -20,6 +20,9 @@ class Address
     #[Groups(["admin.read", "admin.write"])]
     private $name;
 
+    #[ORM\OneToOne(inversedBy: 'address', targetEntity: User::class, cascade: ['persist', 'remove'])]
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -33,6 +36,18 @@ class Address
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

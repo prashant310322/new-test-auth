@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\AddressRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,17 +15,21 @@ class IndexController extends AbstractController
 
 
     private UserService $userService;
+    private AddressRepository $addressRepository;
 
-    public function __construct( UserService $userService )
+    public function __construct( UserService $userService , AddressRepository $addressRepository)
     {
 
         $this->userService = $userService;
+        $this->addressRepository = $addressRepository;
     }
 
     #[Route('/index', name: 'app_index')]
     public function index(): Response
     {
        // dd($this);
+        $address = $this->addressRepository->findUserById(22);
+       // dd($address);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $users =  $this->userService->UserAllNewest();

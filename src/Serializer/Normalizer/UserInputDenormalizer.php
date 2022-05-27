@@ -47,7 +47,7 @@ class UserInputDenormalizer implements  DenormalizerInterface, CacheableSupports
 
         $context[AbstractItemNormalizer::OBJECT_TO_POPULATE] = $this->createDto($context);
 
-        //dump($context);
+        dump($context, $this->normalizer->denormalize($data, $type, $format, $context));
 
             return $this->normalizer->denormalize($data, $type, $format, $context);
 
@@ -56,7 +56,7 @@ class UserInputDenormalizer implements  DenormalizerInterface, CacheableSupports
 
     public function supportsDenormalization(mixed $data, string $type, string $format = null)
     {
-        //dump($data, $type);
+        dump($data, $type, UserInputDto::class === $type);
         // avoid recursion: only call once per object
         if (isset($context[self::ALREADY_CALLED])) {
             return false;
@@ -85,6 +85,7 @@ class UserInputDenormalizer implements  DenormalizerInterface, CacheableSupports
     private function createDto(array $context): UserInputDto
     {
         $entity =   $context['object_to_populate']  ?? null;
+        dump($entity);
 
         if ($entity && !$entity instanceof User) {
             throw new \Exception(sprintf('Unexpected resource class "%s"', get_class($entity)));

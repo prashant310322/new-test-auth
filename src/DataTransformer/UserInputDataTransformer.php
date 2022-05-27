@@ -25,14 +25,14 @@ class UserInputDataTransformer implements  DataTransformerInterface
     {
 
         $users = $context[AbstractItemNormalizer::OBJECT_TO_POPULATE] ?? null;
-        dump($users);
+        dump($users,  $userInputDto->toEntity($users));
 
         return $userInputDto->toEntity($users);
     }
 
     public function supportsTransformation($data, string $to, array $context = []): bool
     {
-        dump($data,$to);
+        dump($data,$to, User::class === $to);
 
         return User::class === $to && UserInputDto::class === ($context['input']['class'] ?? null);
     }

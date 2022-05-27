@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 #[ApiResource(
     normalizationContext: ['groups' => ['user.read' ]],
     denormalizationContext: ['groups'=>['user.write']],
-//    input:UserInputDto::class
+    input:UserInputDto::class
    )]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -94,6 +94,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["admin.read", "admin.write"])]
     #[SerializedName('password')]
     private $plainPassword;
+
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Address::class, cascade: ['persist', 'remove'])]
+    private $address;
 
     public function getId(): ?int
     {
@@ -342,6 +345,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->plainPassword = $plainPassword;
         return  $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($address === null && $this->address !== null) {
+            $this->address->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($address !== null && $address->getUser() !== $this) {
+            $address->setUser($this);
+        }
+
+        $this->address = $address;
+
+        return $this;
     }
 
 
